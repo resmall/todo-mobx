@@ -1,10 +1,35 @@
-import { observable } from "mobx";
+import { observable, computed } from "mobx";
 
-class TodoStore {
-  @observable todos: ["buy milk", "buy eggs"];
-  @observable filter = "";
+class Todo {
+  @observable value;
+  @observable id;
+  @observable complete;
+
+  constructor(value) {
+    this.value = value;
+    this.id = Date.now();
+    this.complete = false;
+  }
 }
 
-var store = (window.store = new TodoStore());
+class TodoStore {
+  @observable todos = [];
+  @observable filter = "";
+  @computed get filteredTodos() {
+    var matchesFilters = new RegExp(this.filter, "i");
+    return this.todos.filter(
+      (todo) => !this.filter || matchesFilters.test(todo.value)
+    );
+  }
 
-export default store;
+  createTodo(value) {
+    this.todos.push(new Todo(value));
+  }
+
+  clearComplete = () => {
+    const incompleteTodos = this.todos.filter((todo) => !todo.complete);
+    this.todos.replace(incompleteTodos);
+  };
+}
+
+export default new TodoStore();

@@ -6,4 +6,4 @@ import store from "./TodoStore";
 
 const app = document.getElementById("root");
 
-ReactDOM.render(<TodoList />, app);
+ReactDOM.render(<TodoList store={store} />, app);
